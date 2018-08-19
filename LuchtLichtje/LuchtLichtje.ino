@@ -4,8 +4,8 @@
 #include <ESP8266HTTPClient.h>
 #include <Arduino.h>
 
-/**
- * Should be working working 2018-08-19
+/** 
+ * Kindoff working working 2018-08-19
  * Use Arduino IDE
  * ESP8266 by ESP8266 Community v. 2.3.0
  * Board: NodeMCU (12E)
@@ -16,9 +16,21 @@
 
 // WIFI DETAILS
 
+
+// TYPE YOUR WIFI SSID HERE:
 #define WIFIAP "fri3d-legacy"
+// TYPE YOUR WIFI PASSWORD HERE
 #define WIFIPASS "fri3dcamp"
-#define SENSOR "http://api.luftdaten.info/v1/sensor/7245/"
+// SEARCH A SENSOR ON luftdaten.info
+// CLICK IT
+// LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
+// CHANGE IT ON THE END (do not remove the trailing slash)
+#define SENSOR "http://api.luftdaten.info/v1/sensor/12988/"
+
+
+
+
+
 // Time between two updates, in minutes
 #define UPDATE_TIMEOUT 15
 // Time in seconds between retries when failed. Should be a multiple of 4
@@ -45,7 +57,6 @@ int posPins[posPinL] = {LEFTH, LEFTL, RIGHTH, RIGHTL};
 #define negPinL 3
 // should be low to work
 int negPins[negPinL] = {RED, YELLOW, GREEN}; 
-
 // ---------------------- WIFI STUFF
 
 ESP8266WiFiMulti WiFiMulti;
@@ -107,6 +118,7 @@ void setup() {
  USE_SERIAL.begin(115200);
 
   initLeds(); 
+  startAnimation();
 }
 
 
@@ -156,8 +168,10 @@ void loop() {
       }
     }
   }
+  // Power both rails while updating...
   digitalWrite(LEFTH, HIGH);
   digitalWrite(LEFTL, HIGH);
+  
 }
 
 
@@ -278,6 +292,9 @@ void showEncoding(int encoding, int series){
   }
 }
 
+
+// ----------------------------------------- LED CONTROL --------------------------------------------
+
 /** Number: the number of the led, with 0 being red, 2 being yellow and 4 being green
  *  Series: 0 = left; 1 = right
  */
@@ -285,8 +302,8 @@ void setLed(boolean status, int number, int series){
   series = (number % 2) == 0 ?  posPins[series*2] : posPins[series*2 + 1];
   int pin = negPins[number/2];
 
-  digitalWrite(series, status ? HIGH : LOW); // pospin
-  digitalWrite(pin, status ? LOW : HIGH); // negpin: should be low to enable
+  digitalWrite(pin, status ? LOW : HIGH);
+  digitalWrite(series, status ? HIGH : LOW); 
 }
 
 void initLeds(){
@@ -297,22 +314,25 @@ void initLeds(){
     pinMode(posPins[i], OUTPUT);
   }
   allLedsOff();
-  for(int i = 0; i < 6; i++){
-    setLed(true, i, LEFT);
-    setLed(true, i, RIGHT);
-    delay(750);
-    allLedsOff();
-  }
 }
 
 void allLedsOff(){
-  for(int i = 0; i < negPinL; i++){
-    pinMode(negPins[i], HIGH);
-  }
-  for(int i = 0; i < posPinL; i++){
-    pinMode(posPins[i], LOW);
+  for(int i = 0; i < 6; i++){
+    setLed(false, i, LEFT);
+    setLed(false, i, RIGHT);
   }
 }
+
+void startAnimation(){
+  for(int i = 0; i < 6; i ++){
+    setLed(true, i,LEFT);
+    setLed(true, i,RIGHT);
+    delay(750);
+    setLed(false, i,LEFT);
+    setLed(false, i,RIGHT);
+  }
+}
+
 
 
 
