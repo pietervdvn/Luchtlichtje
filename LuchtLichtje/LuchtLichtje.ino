@@ -15,9 +15,9 @@
 
 // WIFI DETAILS
 
-#define WIFIAP ""
-#define WIFIPASS ""
-#define SENSOR "http://api.luftdaten.info/v1/sensor/05561/"
+#define WIFIAP "keuken"
+#define WIFIPASS "elfjuli9"
+#define SENSOR "http://api.luftdaten.info/v1/sensor/7245/"
 // Time between two updates, in minutes
 #define UPDATE_TIMEOUT 15
 // Time between retries when failed. Should be a multiple of 4
@@ -34,8 +34,6 @@
 #define GREEN D5
 #define YELLOW D6
 #define RED D7
-
-#define RESET_BUTTON D8
 
 #define LEFT 0
 #define RIGHT 1
@@ -71,7 +69,7 @@ ESP8266WiFiMulti WiFiMulti;
 
 #define OFF 9
 
-
+#define USE_SERIAL Serial
 
 /*
  * As per http://www.who.int/mediacentre/factsheets/fs313/en/
@@ -97,26 +95,26 @@ float* barema10 = new float[9] {0, /*GOOD:*/7.5, 15, 20, /*AVG*/ 26.6, 33.3, 40,
 
 
 void setup() {
-  Serial.begin(115200);
-  Serial.write("LUCHTLICHTJE\n");
-  Serial.write("By Pieter Vander Vennet\n");
+  WiFi.mode(WIFI_STA);
+  WiFiMulti.addAP(WIFIAP, WIFIPASS);
 
-  pinMode(RESET_BUTTON, INPUT);
+
+  USE_SERIAL.begin(115200);
+  
  
   initLeds();
-  initWifi();
 }
 
 
 void loop() {
 
 
-  Serial.println("Updating");
+  USE_SERIAL.println("Updating");
   float pm10, pm25;
   int status = NOT_CONNECTED;
   int retries = 8;
   while(status !=  UP_TO_DATE && retries > 0){
-    Serial.printf("Attempting update. %d retries left\n", retries);
+    USE_SERIAL.printf("Attempting update. %d retries left\n", retries);
     checkButton();
     status = update(&pm10, &pm25);
     if(status != UP_TO_DATE){
@@ -127,17 +125,17 @@ void loop() {
   }
 
   if(status != UP_TO_DATE){
-    Serial.write("Update failed\n");
+    USE_SERIAL.write("Update failed\n");
     for(int i = 0; i < RETRY_TIMEOUT; i++){
       showError(status,i);
       delay(1000);
-      Serial.printf("Retrying in %d\n", RETRY_TIMEOUT - i);
+      USE_SERIAL.printf("Retrying in %d\n", RETRY_TIMEOUT - i);
       checkButton();
     }
     return;
   }
 
-  Serial.printf("PM2.5: %d; PM10: %d\n",(int) pm25,(int) pm10);
+  USE_SERIAL.printf("PM2.5: %d; PM10: %d\n",(int) pm25,(int) pm10);
   // We are up to date. Lets show the bars!
   // We draw one of them, show it for 5ms and hide it again. Then, we show the other bar.
   // The inner loop does this 200 times (one second)
@@ -148,7 +146,7 @@ void loop() {
  for(int m = 0; m < UPDATE_TIMEOUT; m++){ //*/
     for(int s = 0; s < 60; s++){
       if(s % 15 == 0){
-        Serial.printf("Next update in %d:%2d\n", UPDATE_TIMEOUT - 1 - m, 60 - s);
+        USE_SERIAL.printf("Next update in %d:%2d\n", UPDATE_TIMEOUT - 1 - m, 60 - s);
       }
       for(int ms = 0; ms < 100; ms++){
         allLedsOff();
@@ -166,20 +164,74 @@ void loop() {
 }
 
 
-/**
- * This function calculates the state of the PM2.5
- */
-int mapState(float value, float* barema){
-  for(int state = 1; state < OFF; state++){
-    if(barema[state] > value){
-       return state - 1;
-    }
+
+
+
+void checkButton(){
+  if(digitalRead(RESET_BUTTON) == HIGH){
+    setLed(true, 0, LEFT);
+    setLed(true, 1, RIGHT);
+    USE_SERIAL.write("HARD RESET");
+    delay(1000);
+    ESP.eraseConfig(); 
+    ESP.reset();
   }
-  return EXTREMELY_BAD;
 }
 
 
-// ------------------------------------------ Other stuff -------------------------------------
+// ------------------------------------------------------------- UPDATE DATA -------------------------------------------------
+
+
+int update(float* pm10, float* pm25){
+  if(WiFiMulti.run() != WL_CONNECTED) {
+    USE_SERIAL.print("[HTTP] wifi not connected...\n");
+    return NOT_CONNECTED;
+  }
+  
+  HTTPClient http;
+
+  USE_SERIAL.print("[HTTP] begin...\n");
+  // configure server and sho
+  http.begin(SENSOR);
+   
+  USE_SERIAL.print("[HTTP] GET...\n");
+  // start connection and send HTTP header
+  int httpCode = http.GET();
+  USE_SERIAL.printf("[HTTP] Get Done \n");
+  USE_SERIAL.printf("[HTTP] Get code is %d\n", httpCode);
+  // httpCode will be negative on error
+  if(httpCode <= 0) {
+    USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+    http.end();
+    return HTTP_ERR;
+  }
+
+  // HTTP header has been send and Server response header has been handled
+  USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
+
+  // file not found at server or other problem
+  if(httpCode != HTTP_CODE_OK) {
+    USE_SERIAL.printf("[HTTP] GET... returned error status code: %d\n", httpCode);
+    http.end();
+    return HTTP_ERR;
+  }
+  
+  String payload = http.getString();
+  USE_SERIAL.println("Got the payload");
+  StaticJsonBuffer<3000> jsonBuffer;
+  JsonArray& root = jsonBuffer.parseArray(payload);
+  if (!root[0].success()) {
+    USE_SERIAL.println("parseObject() failed");
+    USE_SERIAL.println(payload);
+    return PARSE_ERR;
+  }
+
+  *pm10 = (root[0]["sensordatavalues"][0]["value"].as<float>() + root[1]["sensordatavalues"][0]["value"].as<float>())/2;
+  *pm25 = (root[0]["sensordatavalues"][1]["value"].as<float>() + root[1]["sensordatavalues"][1]["value"].as<float>())/2;
+
+  http.end();
+  return UP_TO_DATE;
+}
 
 // Blinks the leds in an error-indicating sequence
 // Takes 3 seconds to complete
@@ -208,90 +260,20 @@ void showError(int status, int phase){
 }
 
 
-void checkButton(){
-  if(digitalRead(RESET_BUTTON) == HIGH){
-    setLed(true, 0, LEFT);
-    setLed(true, 1, RIGHT);
-    Serial.write("HARD RESET");
-    delay(1000);
-    ESP.eraseConfig(); 
-    ESP.reset();
-  }
-}
-
-
-// ------------------------------------------------------------- UPDATE DATA -------------------------------------------------
-
-int initWifi(){
-   
-  for(int i = 0; i < 6; i++){
-    setLed(true, i, LEFT);
-    setLed(true, i, RIGHT);
-    delay(1000);
-    setLed(false, i, LEFT);
-    setLed(false, i, RIGHT);
-  }
- 
-  setLed(true, 0, LEFT);
-  setLed(true, 5, RIGHT);
-  WiFi.mode(WIFI_STA);
-  WiFiMulti.addAP(WIFIAP, WIFIPASS);
- 
-}
-
-int update(float* pm10, float* pm25){
-  if(WiFiMulti.run() != WL_CONNECTED) {
-    Serial.print("[HTTP] wifi not connected...\n");
-    return NOT_CONNECTED;
-  }
-  
-  HTTPClient http;
-
-  Serial.print("[HTTP] begin...\n");
-  // configure server and sho
-  http.begin(SENSOR);
-   
-  Serial.print("[HTTP] GET...\n");
-  // start connection and send HTTP header
-  int httpCode = http.GET();
-  Serial.printf("[HTTP] Get Done \n");
-  Serial.printf("[HTTP] Get code is %d\n", httpCode);
-  // httpCode will be negative on error
-  if(httpCode <= 0) {
-    Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
-    http.end();
-    return HTTP_ERR;
-  }
-
-  // HTTP header has been send and Server response header has been handled
-  Serial.printf("[HTTP] GET... code: %d\n", httpCode);
-
-  // file not found at server or other problem
-  if(httpCode != HTTP_CODE_OK) {
-    Serial.printf("[HTTP] GET... returned error status code: %d\n", httpCode);
-    http.end();
-    return HTTP_ERR;
-  }
-  
-  String payload = http.getString();
-  Serial.println("Got the payload");
-  StaticJsonBuffer<3000> jsonBuffer;
-  JsonArray& root = jsonBuffer.parseArray(payload);
-  if (!root[0].success()) {
-    Serial.println("parseObject() failed");
-    Serial.println(payload);
-    return PARSE_ERR;
-  }
-
-  *pm10 = (root[0]["sensordatavalues"][0]["value"].as<float>() + root[1]["sensordatavalues"][0]["value"].as<float>())/2;
-  *pm25 = (root[0]["sensordatavalues"][1]["value"].as<float>() + root[1]["sensordatavalues"][1]["value"].as<float>())/2;
-
-  http.end();
-  return UP_TO_DATE;
-}
-
-
 // ----------------------------------------- LED CONTROL --------------------------------------------
+
+/**
+ * This function calculates the state of the PM, given the barema
+ */
+int mapState(float value, float* barema){
+  for(int state = 1; state < OFF; state++){
+    if(barema[state] > value){
+       return state - 1;
+    }
+  }
+  return EXTREMELY_BAD;
+}
+
 
 
 void showEncoding(int encoding, int series){
@@ -329,6 +311,12 @@ void initLeds(){
     pinMode(posPins[i], OUTPUT);
   }
   allLedsOff();
+  for(int i = 0; i < 6; i++){
+    setLed(true, i, LEFT);
+    setLed(true, i, RIGHT);
+    delay(750);
+    allLedsOff();
+  }
 }
 
 void allLedsOff(){
