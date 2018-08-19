@@ -5,6 +5,7 @@
 #include <Arduino.h>
 
 /**
+ * Should be working working 2018-08-19
  * Use Arduino IDE
  * ESP8266 by ESP8266 Community v. 2.3.0
  * Board: NodeMCU (12E)
@@ -15,12 +16,12 @@
 
 // WIFI DETAILS
 
-#define WIFIAP "keuken"
-#define WIFIPASS "elfjuli9"
+#define WIFIAP "fri3d-legacy"
+#define WIFIPASS "fri3dcamp"
 #define SENSOR "http://api.luftdaten.info/v1/sensor/7245/"
 // Time between two updates, in minutes
 #define UPDATE_TIMEOUT 15
-// Time between retries when failed. Should be a multiple of 4
+// Time in seconds between retries when failed. Should be a multiple of 4
 #define RETRY_TIMEOUT 12
 
 // ---------------------------------------- PIN DEFINTIONS FOR LEDS ------------------------------------------
@@ -38,8 +39,12 @@
 #define LEFT 0
 #define RIGHT 1
 
-int posPins[4] = {LEFTH, LEFTL, RIGHTH, RIGHTL}; // should be HIGH to work
-int negPins[3] = {RED, YELLOW, GREEN}; // should be low to work
+#define posPinL 4
+// should be HIGH to work
+int posPins[posPinL] = {LEFTH, LEFTL, RIGHTH, RIGHTL}; 
+#define negPinL 3
+// should be low to work
+int negPins[negPinL] = {RED, YELLOW, GREEN}; 
 
 // ---------------------- WIFI STUFF
 
@@ -99,23 +104,19 @@ void setup() {
   WiFiMulti.addAP(WIFIAP, WIFIPASS);
 
 
-  USE_SERIAL.begin(115200);
-  
- 
-  initLeds();
+ USE_SERIAL.begin(115200);
+
+  initLeds(); 
 }
 
 
 void loop() {
-
-
   USE_SERIAL.println("Updating");
   float pm10, pm25;
   int status = NOT_CONNECTED;
   int retries = 8;
   while(status !=  UP_TO_DATE && retries > 0){
     USE_SERIAL.printf("Attempting update. %d retries left\n", retries);
-    checkButton();
     status = update(&pm10, &pm25);
     if(status != UP_TO_DATE){
       showError(status, 8-retries);
@@ -130,9 +131,7 @@ void loop() {
       showError(status,i);
       delay(1000);
       USE_SERIAL.printf("Retrying in %d\n", RETRY_TIMEOUT - i);
-      checkButton();
-    }
-    return;
+    }    return;
   }
 
   USE_SERIAL.printf("PM2.5: %d; PM10: %d\n",(int) pm25,(int) pm10);
@@ -141,9 +140,8 @@ void loop() {
   // The inner loop does this 200 times (one second)
 
   allLedsOff();
- /* 
- int m = 0; /*/
- for(int m = 0; m < UPDATE_TIMEOUT; m++){ //*/
+ int m = 0; 
+ for(int m = 0; m < UPDATE_TIMEOUT; m++){ 
     for(int s = 0; s < 60; s++){
       if(s % 15 == 0){
         USE_SERIAL.printf("Next update in %d:%2d\n", UPDATE_TIMEOUT - 1 - m, 60 - s);
@@ -156,7 +154,6 @@ void loop() {
         showEncoding(mapState(pm10, barema10), RIGHT);
         delay(5);
       }
-      checkButton();
     }
   }
   digitalWrite(LEFTH, HIGH);
@@ -166,17 +163,6 @@ void loop() {
 
 
 
-
-void checkButton(){
-  if(digitalRead(RESET_BUTTON) == HIGH){
-    setLed(true, 0, LEFT);
-    setLed(true, 1, RIGHT);
-    USE_SERIAL.write("HARD RESET");
-    delay(1000);
-    ESP.eraseConfig(); 
-    ESP.reset();
-  }
-}
 
 
 // ------------------------------------------------------------- UPDATE DATA -------------------------------------------------
@@ -304,10 +290,10 @@ void setLed(boolean status, int number, int series){
 }
 
 void initLeds(){
-  for(int i = 0; i < 3; i++){
+  for(int i = 0; i < negPinL; i++){
     pinMode(negPins[i], OUTPUT);
   }
-  for(int i = 0; i < 4; i++){
+  for(int i = 0; i < posPinL; i++){
     pinMode(posPins[i], OUTPUT);
   }
   allLedsOff();
@@ -320,11 +306,11 @@ void initLeds(){
 }
 
 void allLedsOff(){
-   for(int i = 0; i < 3; i++){
-    digitalWrite(negPins[i], HIGH);
+  for(int i = 0; i < negPinL; i++){
+    pinMode(negPins[i], HIGH);
   }
-  for(int i = 0; i < 4; i++){
-    digitalWrite(posPins[i], LOW);
+  for(int i = 0; i < posPinL; i++){
+    pinMode(posPins[i], LOW);
   }
 }
 
