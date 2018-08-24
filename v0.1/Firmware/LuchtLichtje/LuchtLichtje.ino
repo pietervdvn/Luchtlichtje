@@ -5,7 +5,7 @@
 #include <Arduino.h>
 
 /** 
- * Kindoff working working 2018-08-19
+ * 2018-08-19 (Working for prototype version)
  * Use Arduino IDE
  * ESP8266 by ESP8266 Community v. 2.3.0
  * Board: NodeMCU (12E)

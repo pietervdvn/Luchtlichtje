@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/home/pietervdvn/KiCad/LuchtLampje/LuchtLampje.sch</source>
+    <date>Mon 14 Mai 2018 23:58:46 CEST</date>
+    <tool>Eeschema 4.0.6+dfsg1-1</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>Luchtlampje 1.0</title>
+        <company>Pieter Vander Vennet</company>
+        <rev>0.1</rev>
+        <date>2018-05-14</date>
+        <source>LuchtLampje.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="D1">
+      <value>GREEN</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF1F71B</tstamp>
+    </comp>
+    <comp ref="ESP_D1">
+      <value>CONN_01X15</value>
+      <footprint>Socket_Strips:Socket_Strip_Straight_1x15_Pitch2.54mm</footprint>
+      <libsource lib="conn" part="CONN_01X15"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF1F7A0</tstamp>
+    </comp>
+    <comp ref="RV1">
+      <value>POT 10K</value>
+      <footprint>Potentiometers:Potentiometer_Trimmer_Piher_PT-6v_Horizontal_MountLS</footprint>
+      <libsource lib="device" part="POT"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF1F95F</tstamp>
+    </comp>
+    <comp ref="D2">
+      <value>GREEN</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF37804</tstamp>
+    </comp>
+    <comp ref="D3">
+      <value>YELLOW</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF3787E</tstamp>
+    </comp>
+    <comp ref="D4">
+      <value>YELLOW</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF378BD</tstamp>
+    </comp>
+    <comp ref="Q2">
+      <value>NPN_Green</value>
+      <footprint>TO_SOT_Packages_THT:TO-92_Inline_Wide</footprint>
+      <libsource lib="device" part="Q_NPN_BCE"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF378EC</tstamp>
+    </comp>
+    <comp ref="D5">
+      <value>RED</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF37DF9</tstamp>
+    </comp>
+    <comp ref="D6">
+      <value>RED</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF37E4C</tstamp>
+    </comp>
+    <comp ref="Q3">
+      <value>NPN_Green</value>
+      <footprint>TO_SOT_Packages_THT:TO-92_Inline_Wide</footprint>
+      <libsource lib="device" part="Q_NPN_BCE"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF37F94</tstamp>
+    </comp>
+    <comp ref="D7">
+      <value>GREEN</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF3A73A</tstamp>
+    </comp>
+    <comp ref="D8">
+      <value>GREEN</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF3A749</tstamp>
+    </comp>
+    <comp ref="D9">
+      <value>YELLOW</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF3A750</tstamp>
+    </comp>
+    <comp ref="D10">
+      <value>YELLOW</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF3A757</tstamp>
+    </comp>
+    <comp ref="D11">
+      <value>RED</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF3A766</tstamp>
+    </comp>
+    <comp ref="D12">
+      <value>RED</value>
+      <footprint>LEDs:LED_D5.0mm</footprint>
+      <libsource lib="device" part="LED"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AF3A76D</tstamp>
+    </comp>
+    <comp ref="Q1">
+      <value>NPN_Green</value>
+      <footprint>TO_SOT_Packages_THT:TO-92_Inline_Wide</footprint>
+      <libsource lib="device" part="Q_NPN_BCE"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AFA1E11</tstamp>
+    </comp>
+    <comp ref="R1">
+      <value>1K</value>
+      <footprint>Resistors_THT:R_Axial_DIN0309_L9.0mm_D3.2mm_P12.70mm_Horizontal</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AFA8D7F</tstamp>
+    </comp>
+    <comp ref="ESP_D2">
+      <value>CONN_01X15</value>
+      <footprint>Socket_Strips:Socket_Strip_Straight_1x15_Pitch2.54mm</footprint>
+      <libsource lib="conn" part="CONN_01X15"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5AFAB4F9</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="conn" part="CONN_01X15">
+      <description>Connector, single row, 01x15, pin header</description>
+      <footprints>
+        <fp>Pin_Header_Straight_1X*</fp>
+        <fp>Pin_Header_Angled_1X*</fp>
+        <fp>Socket_Strip_Straight_1X*</fp>
+        <fp>Socket_Strip_Angled_1X*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">J</field>
+        <field name="Value">CONN_01X15</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="passive"/>
+        <pin num="2" name="P2" type="passive"/>
+        <pin num="3" name="P3" type="passive"/>
+        <pin num="4" name="P4" type="passive"/>
+        <pin num="5" name="P5" type="passive"/>
+        <pin num="6" name="P6" type="passive"/>
+        <pin num="7" name="P7" type="passive"/>
+        <pin num="8" name="P8" type="passive"/>
+        <pin num="9" name="P9" type="passive"/>
+        <pin num="10" name="P10" type="passive"/>
+        <pin num="11" name="P11" type="passive"/>
+        <pin num="12" name="P12" type="passive"/>
+        <pin num="13" name="P13" type="passive"/>
+        <pin num="14" name="P14" type="passive"/>
+        <pin num="15" name="P15" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="LED">
+      <description>LED generic</description>
+      <footprints>
+        <fp>LED*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">D</field>
+        <field name="Value">LED</field>
+      </fields>
+      <pins>
+        <pin num="1" name="K" type="passive"/>
+        <pin num="2" name="A" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="POT">
+      <description>Potentionmeter</description>
+      <fields>
+        <field name="Reference">RV</field>
+        <field name="Value">POT</field>
+      </fields>
+      <pins>
+        <pin num="1" name="1" type="passive"/>
+        <pin num="2" name="2" type="passive"/>
+        <pin num="3" name="3" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="Q_NPN_BCE">
+      <description>Transistor NPN (general)</description>
+      <fields>
+        <field name="Reference">Q</field>
+        <field name="Value">Q_NPN_BCE</field>
+      </fields>
+      <pins>
+        <pin num="1" name="B" type="input"/>
+        <pin num="2" name="C" type="passive"/>
+        <pin num="3" name="E" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="device" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+        <fp>R_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="device">
+      <uri>/usr/share/kicad/library/device.lib</uri>
+    </library>
+    <library logical="conn">
+      <uri>/usr/share/kicad/library/conn.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="Net-(ESP_D1-Pad5)">
+      <node ref="ESP_D1" pin="5"/>
+    </net>
+    <net code="2" name="/Red_Control">
+      <node ref="ESP_D1" pin="10"/>
+      <node ref="Q3" pin="1"/>
+    </net>
+    <net code="3" name="/Yellow_Control">
+      <node ref="Q2" pin="1"/>
+      <node ref="ESP_D1" pin="9"/>
+    </net>
+    <net code="4" name="/Green_Control">
+      <node ref="ESP_D1" pin="8"/>
+      <node ref="Q1" pin="1"/>
+    </net>
+    <net code="5" name="/3V">
+      <node ref="ESP_D1" pin="6"/>
+    </net>
+    <net code="6" name="/GND">
+      <node ref="ESP_D1" pin="7"/>
+      <node ref="RV1" pin="2"/>
+    </net>
+    <net code="7" name="Net-(ESP_D1-Pad11)">
+      <node ref="ESP_D1" pin="11"/>
+    </net>
+    <net code="8" name="Net-(ESP_D1-Pad12)">
+      <node ref="ESP_D1" pin="12"/>
+    </net>
+    <net code="9" name="Net-(ESP_D1-Pad13)">
+      <node ref="ESP_D1" pin="13"/>
+    </net>
+    <net code="10" name="Net-(ESP_D1-Pad14)">
+      <node ref="ESP_D1" pin="14"/>
+    </net>
+    <net code="11" name="Net-(ESP_D1-Pad15)">
+      <node ref="ESP_D1" pin="15"/>
+    </net>
+    <net code="12" name="Net-(R1-Pad2)">
+      <node ref="RV1" pin="3"/>
+      <node ref="R1" pin="2"/>
+    </net>
+    <net code="13" name="/Arr2_High">
+      <node ref="D9" pin="2"/>
+      <node ref="D7" pin="2"/>
+      <node ref="D11" pin="2"/>
+      <node ref="ESP_D1" pin="3"/>
+    </net>
+    <net code="14" name="/Arr2_Low">
+      <node ref="ESP_D1" pin="4"/>
+      <node ref="D12" pin="2"/>
+      <node ref="D10" pin="2"/>
+      <node ref="D8" pin="2"/>
+    </net>
+    <net code="15" name="Net-(ESP_D2-Pad8)">
+      <node ref="ESP_D2" pin="8"/>
+    </net>
+    <net code="16" name="Net-(ESP_D2-Pad9)">
+      <node ref="ESP_D2" pin="9"/>
+    </net>
+    <net code="17" name="Net-(ESP_D2-Pad10)">
+      <node ref="ESP_D2" pin="10"/>
+    </net>
+    <net code="18" name="Net-(ESP_D2-Pad11)">
+      <node ref="ESP_D2" pin="11"/>
+    </net>
+    <net code="19" name="Net-(ESP_D2-Pad12)">
+      <node ref="ESP_D2" pin="12"/>
+    </net>
+    <net code="20" name="Net-(ESP_D2-Pad13)">
+      <node ref="ESP_D2" pin="13"/>
+    </net>
+    <net code="21" name="Net-(ESP_D2-Pad14)">
+      <node ref="ESP_D2" pin="14"/>
+    </net>
+    <net code="22" name="Net-(ESP_D2-Pad15)">
+      <node ref="ESP_D2" pin="15"/>
+    </net>
+    <net code="23" name="Net-(ESP_D2-Pad7)">
+      <node ref="ESP_D2" pin="7"/>
+    </net>
+    <net code="24" name="Net-(D1-Pad1)">
+      <node ref="D7" pin="1"/>
+      <node ref="D1" pin="1"/>
+      <node ref="Q1" pin="2"/>
+      <node ref="D8" pin="1"/>
+      <node ref="D2" pin="1"/>
+    </net>
+    <net code="25" name="Net-(RV1-Pad1)">
+      <node ref="RV1" pin="1"/>
+    </net>
+    <net code="26" name="Net-(ESP_D2-Pad1)">
+      <node ref="ESP_D2" pin="1"/>
+    </net>
+    <net code="27" name="Net-(ESP_D2-Pad2)">
+      <node ref="ESP_D2" pin="2"/>
+    </net>
+    <net code="28" name="Net-(ESP_D2-Pad3)">
+      <node ref="ESP_D2" pin="3"/>
+    </net>
+    <net code="29" name="Net-(ESP_D2-Pad4)">
+      <node ref="ESP_D2" pin="4"/>
+    </net>
+    <net code="30" name="Net-(ESP_D2-Pad5)">
+      <node ref="ESP_D2" pin="5"/>
+    </net>
+    <net code="31" name="Net-(ESP_D2-Pad6)">
+      <node ref="ESP_D2" pin="6"/>
+    </net>
+    <net code="32" name="Net-(D10-Pad1)">
+      <node ref="D10" pin="1"/>
+      <node ref="D9" pin="1"/>
+      <node ref="Q2" pin="2"/>
+      <node ref="D3" pin="1"/>
+      <node ref="D4" pin="1"/>
+    </net>
+    <net code="33" name="Net-(D11-Pad1)">
+      <node ref="D12" pin="1"/>
+      <node ref="D11" pin="1"/>
+      <node ref="Q3" pin="2"/>
+      <node ref="D6" pin="1"/>
+      <node ref="D5" pin="1"/>
+    </net>
+    <net code="34" name="/Arr1_High">
+      <node ref="ESP_D1" pin="1"/>
+      <node ref="D1" pin="2"/>
+      <node ref="D3" pin="2"/>
+      <node ref="D5" pin="2"/>
+    </net>
+    <net code="35" name="/Arr1_Low">
+      <node ref="ESP_D1" pin="2"/>
+      <node ref="D4" pin="2"/>
+      <node ref="D2" pin="2"/>
+      <node ref="D6" pin="2"/>
+    </net>
+    <net code="36" name="Net-(Q1-Pad3)">
+      <node ref="Q3" pin="3"/>
+      <node ref="Q2" pin="3"/>
+      <node ref="R1" pin="1"/>
+      <node ref="Q1" pin="3"/>
+    </net>
+  </nets>
+</export>
