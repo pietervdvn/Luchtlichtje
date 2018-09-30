@@ -5,34 +5,41 @@
 #include <Arduino.h>
 
 /** 
- * 2018-08-19 (Working for prototype version)
+ * 2018-08-19 (Working for release candidate)
  * Use Arduino IDE
- * ESP8266 by ESP8266 Community v. 2.3.0
- * Board: NodeMCU (12E)
+ * Add 'http://arduino.esp8266.com/stable/package_esp8266com_index.json' to the 'additional boards manager' in 'File -> Preferences'
+ * Add 'ESP8266 by ESP8266 Community v. 2.3.0' in the boards manager
+ * Use following settings under tools:
+ * Board: NodeMCU 1.0 (12E)
  * CPU Freq: 80Mhz
  * Flash size: 4M (3M SPiffs)
  * Upload speed: 115200
+ * 
+ * Add 'ARduinoJSON' in the 'library manager', version 5.5.0
+ * 
+ * 
+ * 
  */
 
 // WIFI DETAILS
 
 
 // TYPE YOUR WIFI SSID HERE:
-#define WIFIAP "FabLab"
+#define WIFIAP "keuken"
 // TYPE YOUR WIFI PASSWORD HERE
-#define WIFIPASS "eflwifi2018"
+#define WIFIPASS "elfjuli9"
 // SEARCH A SENSOR ON luftdaten.info
 // CLICK IT
 // LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
 // CHANGE IT ON THE END (do not remove the trailing slash)
-#define SENSOR "http://api.luftdaten.info/v1/sensor/12988/"
+#define SENSOR "http://api.luftdaten.info/v1/sensor/959651/"
 
 
 
 
 
 // Time between two updates, in minutes
-#define UPDATE_TIMEOUT 15
+#define UPDATE_TIMEOUT 1
 // Time in seconds between retries when failed. Should be a multiple of 4
 #define RETRY_TIMEOUT 12
 
@@ -236,7 +243,11 @@ int update(float* pm10, float* pm25){
   // HTTP header has been send and Server response header has been handled
   USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
 
-  // file not found at server or other problem
+  // file no
+// TYPE YOUR WIFI SSID HERE:
+#define WIFIAP "fri3d-legacy"
+// TYPE YOUR WIFI PASSWORD HERE
+#define WIFIPASS "fri3dcamp"t found at server or other problem
   if(httpCode != HTTP_CODE_OK) {
     USE_SERIAL.printf("[HTTP] GET... returned error status code: %d\n", httpCode);
     http.end();

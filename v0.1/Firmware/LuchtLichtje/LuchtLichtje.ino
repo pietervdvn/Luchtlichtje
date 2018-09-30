@@ -18,9 +18,9 @@
 
 
 // TYPE YOUR WIFI SSID HERE:
-#define WIFIAP "fri3d-legacy"
+#define WIFIAP "keuken"
 // TYPE YOUR WIFI PASSWORD HERE
-#define WIFIPASS "fri3dcamp"
+#define WIFIPASS "elfjuli9"
 // SEARCH A SENSOR ON luftdaten.info
 // CLICK IT
 // LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
