@@ -4,6 +4,9 @@ Source code and hardware spec of the ESP8266 driven Air Quality Indicator "Lucht
 
 A small ESP/Arduino Project, showing lights indicating the air quality, based on data from luftdaten.info
 
+![https://raw.githubusercontent.com/pietervdvn/Luchtlichtje/master/2018-06-09%2017.20.08.jpg]
+![2018-06-16 23.11.13.gif]
+
 ## API
 
 Get your sensor data at http://api.luftdaten.info/v1/sensor/7245/
