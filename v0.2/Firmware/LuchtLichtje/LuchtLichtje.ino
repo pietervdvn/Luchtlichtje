@@ -1,11 +1,11 @@
-#include <ArduinoJson.h>
+ #include <ArduinoJson.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266HTTPClient.h>
 #include <Arduino.h>
 
-/** 
- * 2018-08-19 (Working for release candidate)
+/**                             
+ * 2019-04-03 (Working for prod with new API)
  * Use Arduino IDE
  * Add 'http://arduino.esp8266.com/stable/package_esp8266com_index.json' to the 'additional boards manager' in 'File -> Preferences'
  * Add 'ESP8266 by ESP8266 Community v. 2.3.0' in the boards manager
@@ -32,7 +32,7 @@
 // CLICK IT
 // LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
 // CHANGE IT ON THE END (do not remove the trailing slash)
-#define SENSOR "http://api.luftdaten.info/v1/sensor/959651/"
+#define SENSOR "http://api.luftdaten.info/v1/sensor/7245/"
 
 
 

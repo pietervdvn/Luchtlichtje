@@ -18,14 +18,14 @@
 
 
 // TYPE YOUR WIFI SSID HERE:
-#define WIFIAP "keuken"
+#define WIFIAP "boven"
 // TYPE YOUR WIFI PASSWORD HERE
 #define WIFIPASS "elfjuli9"
 // SEARCH A SENSOR ON luftdaten.info
 // CLICK IT
 // LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
 // CHANGE IT ON THE END (do not remove the trailing slash)
-#define SENSOR "http://api.luftdaten.info/v1/sensor/12988/"
+#define SENSOR "http://api.luftdaten.info/v1/sensor/7245/"
 
 
 
