@@ -3,6 +3,7 @@
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266HTTPClient.h>
 #include <Arduino.h>
+#include <WiFiClientSecure.h>
 
 /**                             
  * 2019-04-03 (Working for prod with new API)
@@ -25,18 +26,23 @@
 
 
 // TYPE YOUR WIFI SSID HERE:
-#define WIFIAP "keuken"
+#define WIFIAP "Wireless Belgie"
 // TYPE YOUR WIFI PASSWORD HERE
-#define WIFIPASS "elfjuli9"
+#define WIFIPASS ""
 // SEARCH A SENSOR ON luftdaten.info
 // CLICK IT
 // LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
 // CHANGE IT ON THE END (do not remove the trailing slash)
-#define SENSOR "http://api.luftdaten.info/v1/sensor/7245/"
 
+const char* host = "data.sensor.community";
+const char* sensor = "/airrohr/v1/sensor/7245/";
+const int httpsPort = 443;
 
+// SHA1 fingerprint of the certificate
+const char fingerprint[] PROGMEM = "DF:14:13:1B:DF:BD:6E:DA:54:57:5C:41:E7:B4:FE:7F:40:B7:F9:84";
 
-
+// If you have a v2.0 board, put this to true
+#define USE_BRIGHTNESS true
 
 // Time between two updates, in minutes
 #define UPDATE_TIMEOUT 1
@@ -121,13 +127,15 @@ int brightness = 1000;
 
 
 void setup() {
-  WiFi.mode(WIFI_STA);
-  WiFiMulti.addAP(WIFIAP, WIFIPASS);
-
-
+    
   USE_SERIAL.begin(115200);
-
-  initLeds(); 
+  USE_SERIAL.print("Booting\n");
+  WiFi.mode(WIFI_STA);
+  
+  WiFi.persistent(false);
+  WiFi.begin(WIFIAP, WIFIPASS);
+  initLeds();
+  
   startAnimation();
 }
 
@@ -137,12 +145,13 @@ void loop() {
   float pm10, pm25;
   int status = NOT_CONNECTED;
   int retries = 8;
+  
   while(status !=  UP_TO_DATE && retries > 0){
     USE_SERIAL.printf("Attempting update. %d retries left\n", retries);
     status = update(&pm10, &pm25);
     if(status != UP_TO_DATE){
       showError(status, 8-retries);
-      delay(500);
+      delay(1000);
     }
     retries --;
   }
@@ -153,7 +162,8 @@ void loop() {
       showError(status,i);
       delay(1000);
       USE_SERIAL.printf("Retrying in %d\n", RETRY_TIMEOUT - i);
-    }    return;
+    }   
+    return;
   }
 
   USE_SERIAL.printf("PM2.5: %d; PM10: %d\n",(int) pm25,(int) pm10);
@@ -162,7 +172,7 @@ void loop() {
   // The inner loop does this 200 times (one second)
 
   allLedsOff();
- int m = 0; 
+
  for(int m = 0; m < UPDATE_TIMEOUT; m++){ 
     for(int s = 0; s < 60; s++){
       if(s % 15 == 0){
@@ -171,24 +181,28 @@ void loop() {
 
       // The fraction of time that a single led should be powered
       // Number of milliseconds that a led should be on
+      int cycletime = 5;
       for(int ms = 0; ms < 100; ms++){
-        int msOn = (int) (10 * brightness / 1000);
-        if(msOn > 9){
-          msOn = 9;
+          
+        int msOn = (int) (cycletime * brightness / 1000);
+        if(msOn > cycletime){
+          showEncoding(mapState(pm25, barema25), LEFT);
+          delay(cycletime);
         }
-        if(msOn < 0){
-          msOn = 0;
+        if(msOn < 1){
+          msOn = 1;
         }
-        USE_SERIAL.printf("Time on: %d\n", msOn);
         allLedsOff();
-        delay(9 - msOn);
+        delay(cycletime - msOn);
         showEncoding(mapState(pm25, barema25), LEFT);
-        delay(1+msOn);
+        delay(msOn);
+        
+        
         allLedsOff();
-        delay(9 - msOn);
+        delay(cycletime - msOn);
         showEncoding(mapState(pm10, barema10), RIGHT);
-        delay(1+msOn);
-        updateBrightness(5);
+        delay(msOn);
+        updateBrightness();
       }
     }
   }
@@ -201,13 +215,18 @@ void loop() {
 // ----------------------------------------------------------- READ BRIGHTNESS -------------------------------------------
 
 
-void updateBrightness(int loopLengthMS){
+void updateBrightness(){
   int readBrightness = analogRead(BRIGHTNESS_PIN);
+  if(!USE_BRIGHTNESS){
+      // No brightness sensor installed or bad connection - do not update the brightness
+    return;
+  }
   if(brightness > readBrightness){
     brightness -= 5;
   }else if (brightness < readBrightness){
     brightness += 5;
   }
+  USE_SERIAL.printf("Current brightness is %d, read value is %d\n", brightness, readBrightness);
 }
 
 
@@ -217,46 +236,44 @@ void updateBrightness(int loopLengthMS){
 
 
 int update(float* pm10, float* pm25){
-  if(WiFiMulti.run() != WL_CONNECTED) {
-    USE_SERIAL.print("[HTTP] wifi not connected...\n");
+  if(WiFi.status() != WL_CONNECTED) {
+    USE_SERIAL.print("[HTTP] wifi ");
+    USE_SERIAL.print(WIFIAP);
+    USE_SERIAL.print(" not connected...\n");
     return NOT_CONNECTED;
   }
+  USE_SERIAL.print("[HTTP] Wifi should be connected: ");
+  USE_SERIAL.print(WiFi.status());
+  USE_SERIAL.print("\n\n");
   
-  HTTPClient http;
+  
+  
+  // Use WiFiClientSecure class to create TLS connection
+  WiFiClientSecure client;
+  client.setFingerprint(fingerprint);
 
-  USE_SERIAL.print("[HTTP] begin...\n");
-  // configure server and sho
-  http.begin(SENSOR);
-   
-  USE_SERIAL.print("[HTTP] GET...\n");
-  // start connection and send HTTP header
-  int httpCode = http.GET();
-  USE_SERIAL.printf("[HTTP] Get Done \n");
-  USE_SERIAL.printf("[HTTP] Get code is %d\n", httpCode);
-  // httpCode will be negative on error
-  if(httpCode <= 0) {
-    USE_SERIAL.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
-    http.end();
+  if (!client.connect(host, httpsPort)) {
+    Serial.println("connection failed");
     return HTTP_ERR;
   }
 
-  // HTTP header has been send and Server response header has been handled
-  USE_SERIAL.printf("[HTTP] GET... code: %d\n", httpCode);
+   client.print(String("GET ") + sensor + " HTTP/1.1\r\n" +
+               "Host: " + host + "\r\n" +
+               "User-Agent: BuildFailureDetectorESP8266\r\n" +
+               "Connection: close\r\n\r\n");
 
-  // file no
-// TYPE YOUR WIFI SSID HERE:
-#define WIFIAP "fri3d-legacy"
-// TYPE YOUR WIFI PASSWORD HERE
-#define WIFIPASS "fri3dcamp"t found at server or other problem
-  if(httpCode != HTTP_CODE_OK) {
-    USE_SERIAL.printf("[HTTP] GET... returned error status code: %d\n", httpCode);
-    http.end();
-    return HTTP_ERR;
+  while (client.connected()) {
+    String line = client.readStringUntil('\n');
+    if (line == "\r") {
+      Serial.println("headers received");
+      break;
+    }
   }
+  client.readStringUntil('\n'); // Read the length and discard it
+  String payload = client.readString();
   
-  String payload = http.getString();
   USE_SERIAL.println("Got the payload");
-  StaticJsonBuffer<3000> jsonBuffer;
+  DynamicJsonBuffer jsonBuffer;
   JsonArray& root = jsonBuffer.parseArray(payload);
   if (!root[0].success()) {
     USE_SERIAL.println("parseObject() failed");
@@ -264,10 +281,9 @@ int update(float* pm10, float* pm25){
     return PARSE_ERR;
   }
 
-  *pm10 = (root[0]["sensordatavalues"][0]["value"].as<float>() + root[1]["sensordatavalues"][0]["value"].as<float>())/2;
-  *pm25 = (root[0]["sensordatavalues"][1]["value"].as<float>() + root[1]["sensordatavalues"][1]["value"].as<float>())/2;
+  *pm10 = (root[0]["sensordatavalues"][0]["value"].as<float>());
+  *pm25 = (root[0]["sensordatavalues"][1]["value"].as<float>());
 
-  http.end();
   return UP_TO_DATE;
 }
 
