@@ -22,14 +22,14 @@ Get your sensor data at http://api.luftdaten.info/v1/sensor/7245/
 
 ## Flashing a Luchtlichtje
 
-- Download the latest arduino IDE
-- Open 'File -> Preferences', add "http://arduino.esp8266.com/stable/package_esp8266com_index.json" to the field "Additional board manager URLs"
-- Open 'Tools -> Board -> Boards Manager'
-- Once loaded, search for 'ESP' in the bar in the right-upper-hand
-- Click esp8266 by "ESP8266 community", install version 2.3.0 (_not_ latest!)
-- With tools, select the right values. These are documented in the source code themselve
-- Change the wifi network name, password and the ID of the sensor you want to follow
-- Connect the ESP to your computer and click 'upload'
+
+- Install platformio
+- Open the console
+- cd to the desired directory (v0.2/firmware)
+- `sudo platformio run --target upload`
+- Use `platformio run --target monitor` to see what is happening
+
+
 
 
 ## Assembly instructions
