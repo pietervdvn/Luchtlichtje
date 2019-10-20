@@ -54,3 +54,8 @@ If more then the desired leds burn, some LEDS are soldered in the wrong directio
 If the orange leds start blinking one after another; the board is connecting to the wifi. This will always happen for a few seconds when booting.
 
 If the reds leds are blinking, either luftdaten or your sensor is down. 
+
+## Versions
+
+The first version (v1.0) is dated 2018-05-15
+The second version (v2.0) is dated 2018-08-24. Changes are: removal of unused transistors, addition of a brightness sensor, fancier placement of resistors.
