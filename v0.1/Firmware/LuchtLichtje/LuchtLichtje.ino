@@ -18,9 +18,9 @@
 
 
 // TYPE YOUR WIFI SSID HERE:
-#define WIFIAP "boven"
+#define WIFIAP "revspace-pub-2.4ghz"
 // TYPE YOUR WIFI PASSWORD HERE
-#define WIFIPASS "elfjuli9"
+#define WIFIPASS ""
 // SEARCH A SENSOR ON luftdaten.info
 // CLICK IT
 // LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
@@ -112,7 +112,7 @@ float* barema10 = new float[9] {0, /*GOOD:*/7.5, 15, 20, /*AVG*/ 26.6, 33.3, 40,
 
 void setup() {
   WiFi.mode(WIFI_STA);
-  WiFiMulti.addAP(WIFIAP, WIFIPASS);
+  WiFi.begin(WIFIAP, WIFIPASS);
 
 
  USE_SERIAL.begin(115200);
@@ -183,7 +183,7 @@ void loop() {
 
 
 int update(float* pm10, float* pm25){
-  if(WiFiMulti.run() != WL_CONNECTED) {
+  if(WiFi.status() != WL_CONNECTED) {
     USE_SERIAL.print("[HTTP] wifi not connected...\n");
     return NOT_CONNECTED;
   }
