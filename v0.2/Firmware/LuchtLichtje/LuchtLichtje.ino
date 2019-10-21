@@ -5,24 +5,6 @@
 #include <Arduino.h>
 #include <WiFiClientSecure.h>
 
-/**                             
- * 2019-04-03 (Working for prod with new API)
- * Use Arduino IDE
- * Add 'http://arduino.esp8266.com/stable/package_esp8266com_index.json' to the 'additional boards manager' in 'File -> Preferences'
- * Add 'ESP8266 by ESP8266 Community v. 2.3.0' in the boards manager
- * Use following settings under tools:
- * Board: NodeMCU 1.0 (12E)
- * CPU Freq: 80Mhz
- * Flash size: 4M (3M SPiffs)
- * Upload speed: 115200
- * 
- * Add 'ARduinoJSON' in the 'library manager', version 5.5.0
- * 
- * 
- * 
- */
-
-// WIFI DETAILS
 
 
 // TYPE YOUR WIFI SSID HERE:
@@ -44,8 +26,8 @@ const char fingerprint[] PROGMEM = "DF:14:13:1B:DF:BD:6E:DA:54:57:5C:41:E7:B4:FE
 // If you have a v2.0 board, put this to true
 #define USE_BRIGHTNESS true
 
-// Time between two updates, in minutes
-#define UPDATE_TIMEOUT 1
+// Time between two updates, in seconds
+#define UPDATE_TIMEOUT 300
 // Time in seconds between retries when failed. Should be a multiple of 4
 #define RETRY_TIMEOUT 12
 
@@ -123,6 +105,9 @@ float* barema10 = new float[9] {0, /*GOOD:*/7.5, 15, 20, /*AVG*/ 26.6, 33.3, 40,
 // The current brightness. This value floats slowly (~20/sec max)
 int brightness = 1000;
 
+float pm10 = 0;
+float pm25 = 0;
+
 // ------------------------------------------- MAIN PROGRAM --------------------------------
 
 
@@ -137,18 +122,20 @@ void setup() {
   initLeds();
   
   startAnimation();
+  setLed(true, 5,LEFT);
+  setLed(true, 0,RIGHT);
 }
 
 
 void loop() {
   USE_SERIAL.println("Updating");
-  float pm10, pm25;
+
   int status = NOT_CONNECTED;
   int retries = 8;
   
   while(status !=  UP_TO_DATE && retries > 0){
     USE_SERIAL.printf("Attempting update. %d retries left\n", retries);
-    status = update(&pm10, &pm25);
+    status = update();
     if(status != UP_TO_DATE){
       showError(status, 8-retries);
       delay(1000);
@@ -173,10 +160,10 @@ void loop() {
 
   allLedsOff();
 
- for(int m = 0; m < UPDATE_TIMEOUT; m++){ 
-    for(int s = 0; s < 60; s++){
-      if(s % 15 == 0){
-        USE_SERIAL.printf("Next update in %d:%2d\n", UPDATE_TIMEOUT - 1 - m, 60 - s);
+  for(int s = 0; s < UPDATE_TIMEOUT; s++){
+      if(s % 10 == 0){
+        USE_SERIAL.printf("Next update in %d sec\n", UPDATE_TIMEOUT - 1 - s);
+         USE_SERIAL.printf("Current brightness is %d\n", brightness);
       }
 
       // The fraction of time that a single led should be powered
@@ -205,7 +192,7 @@ void loop() {
         updateBrightness();
       }
     }
-  }
+  
   // Power both rails while updating...
   digitalWrite(LEFTH, HIGH);
   digitalWrite(LEFTL, HIGH);
@@ -226,7 +213,6 @@ void updateBrightness(){
   }else if (brightness < readBrightness){
     brightness += 5;
   }
-  USE_SERIAL.printf("Current brightness is %d, read value is %d\n", brightness, readBrightness);
 }
 
 
@@ -235,7 +221,7 @@ void updateBrightness(){
 // ------------------------------------------------------------- UPDATE DATA -------------------------------------------------
 
 
-int update(float* pm10, float* pm25){
+int update(){
   if(WiFi.status() != WL_CONNECTED) {
     USE_SERIAL.print("[HTTP] wifi ");
     USE_SERIAL.print(WIFIAP);
@@ -281,8 +267,21 @@ int update(float* pm10, float* pm25){
     return PARSE_ERR;
   }
 
-  *pm10 = (root[0]["sensordatavalues"][0]["value"].as<float>());
-  *pm25 = (root[0]["sensordatavalues"][1]["value"].as<float>());
+  float newPm10 = (root[0]["sensordatavalues"][0]["value"].as<float>() + root[1]["sensordatavalues"][0]["value"].as<float>()) / 2;
+  float newPm25 = (root[0]["sensordatavalues"][1]["value"].as<float>() + root[1]["sensordatavalues"][1]["value"].as<float>()) / 2;
+  if(pm10 == 0 && pm25 == 0){
+        pm10 = newPm10;
+        pm25 = newPm25; 
+        USE_SERIAL.printf("(Initial assignment) Read: %f, new value is %f\n", newPm10, pm10);
+  }else{
+      USE_SERIAL.printf("Read: %f, old value is %f, ", newPm10, pm10);
+        // The new value is calculated by taking into account the previous value as well, to have less effect of outliers
+        // The shown sum equals n0/2 + n1/4 + n2/8 + n3/16 ... (the lowest index is the last measurement)
+        pm10 = (newPm10 + pm10)/2.0; 
+        pm25 = (newPm25 + pm25)/2.0;
+        USE_SERIAL.printf("New value is %f\n", pm10);
+  }
+    
 
   return UP_TO_DATE;
 }
