@@ -133,22 +133,33 @@ void setup() {
   initLeds();
   
   startAnimation();
-  setLed(true, 5,LEFT);
-  setLed(true, 0,RIGHT);
-
+  
+  EEPROM.begin(sizeof(savedata));
+  EEPROM.get(0, savedata);
   wifiManager.addParameter(&luftdatenIdParam);
   wifiManager.setSaveConfigCallback(wifiManagerCallback);
   wifiManager.setConfigPortalTimeout(120);
   if (savedata.magic == SAVEDATA_MAGIC) {
+	  USE_SERIAL.printf("Access point is available for 2 minutes before attempting reconnect to previous network. Current luftdatenID is %s\n", savedata.luftdatenid);
+  	  setLed(true, 3,LEFT);
+      setLed(true, 0,RIGHT);
       wifiManager.autoConnect("ESP-LUCHTLICHTJE");
   } else {
+  	  USE_SERIAL.println("Looks like a fresh boot, starting ConfigPortal...");
+ 
+   	  setLed(true, 5,LEFT);
+      setLed(true, 0,RIGHT);
       wifiManager.startConfigPortal("ESP-LUCHTLICHTJE");
   }
+  setLed(true, 5,LEFT);
+  setLed(true, 3,LEFT);
+  setLed(true, 0,RIGHT);
+  USE_SERIAL.printf("Loading luftdatenID %s\n",savedata.luftdatenid);
 }
 
 
 void loop() {
-  USE_SERIAL.println("Updating");
+  USE_SERIAL.printf("Updating - attmepting to get sensor %s\n", savedata.luftdatenid);
 
   int status = NOT_CONNECTED;
   int retries = 8;
