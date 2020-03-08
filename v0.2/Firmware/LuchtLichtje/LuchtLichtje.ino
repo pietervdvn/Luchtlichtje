@@ -4,24 +4,29 @@
 #include <ESP8266HTTPClient.h>
 #include <Arduino.h>
 #include <WiFiClientSecure.h>
+#include <WiFiManager.h>
+#include <EEPROM.h>
 
-
-
-// TYPE YOUR WIFI SSID HERE:
-#define WIFIAP "Wireless Belgie"
-// TYPE YOUR WIFI PASSWORD HERE
-#define WIFIPASS ""
 // SEARCH A SENSOR ON luftdaten.info
 // CLICK IT
 // LOOK FOR SENSOR ID IN THE TABLE APPEARING RIGHT
-// CHANGE IT ON THE END (do not remove the trailing slash)
+// FILL IT IN DURING INITAL WIFIMANAGER SETUP
 
 const char* host = "data.sensor.community";
-const char* sensor = "/airrohr/v1/sensor/7245/";
+const char* sensor = "/airrohr/v1/sensor/%s/";
 const int httpsPort = 443;
+
+#define SAVEDATA_MAGIC  0xDEADBEEF
+
+typedef struct {
+    char luftdatenid[16];
+    uint32_t magic;
+} savedata_t;
 
 // SHA1 fingerprint of the certificate
 const char fingerprint[] PROGMEM = "DF:14:13:1B:DF:BD:6E:DA:54:57:5C:41:E7:B4:FE:7F:40:B7:F9:84";
+static WiFiManager wifiManager;
+static WiFiManagerParameter luftdatenIdParam("luftdatenid", "Luftdaten ID", "", sizeof(savedata_t));
 
 // If you have a v2.0 board, put this to true
 #define USE_BRIGHTNESS true
@@ -108,22 +113,39 @@ int brightness = 1000;
 float pm10 = 0;
 float pm25 = 0;
 
+static savedata_t savedata;
+
 // ------------------------------------------- MAIN PROGRAM --------------------------------
 
+static void wifiManagerCallback(void)
+{
+  strcpy(savedata.luftdatenid, luftdatenIdParam.getValue());
+  savedata.magic = SAVEDATA_MAGIC;
+
+  printf("Saving data to EEPROM: luftdatenid='%s'\n", savedata.luftdatenid);
+  EEPROM.put(0, savedata);
+  EEPROM.commit();
+}
 
 void setup() {
     
   USE_SERIAL.begin(115200);
   USE_SERIAL.print("Booting\n");
-  WiFi.mode(WIFI_STA);
-  
-  WiFi.persistent(false);
-  WiFi.begin(WIFIAP, WIFIPASS);
+
   initLeds();
   
   startAnimation();
   setLed(true, 5,LEFT);
   setLed(true, 0,RIGHT);
+
+  wifiManager.addParameter(&luftdatenIdParam);
+  wifiManager.setSaveConfigCallback(wifiManagerCallback);
+  wifiManager.setConfigPortalTimeout(120);
+  if (savedata.magic == SAVEDATA_MAGIC) {
+      wifiManager.autoConnect("ESP-LUCHTLICHTJE");
+  } else {
+      wifiManager.startConfigPortal("ESP-LUCHTLICHTJE");
+  }
 }
 
 
@@ -222,17 +244,16 @@ void updateBrightness(){
 
 
 int update(){
+  char sensorpath[128];
+
   if(WiFi.status() != WL_CONNECTED) {
     USE_SERIAL.print("[HTTP] wifi ");
-    USE_SERIAL.print(WIFIAP);
     USE_SERIAL.print(" not connected...\n");
     return NOT_CONNECTED;
   }
   USE_SERIAL.print("[HTTP] Wifi should be connected: ");
   USE_SERIAL.print(WiFi.status());
   USE_SERIAL.print("\n\n");
-  
-  
   
   // Use WiFiClientSecure class to create TLS connection
   WiFiClientSecure client;
@@ -243,7 +264,8 @@ int update(){
     return HTTP_ERR;
   }
 
-   client.print(String("GET ") + sensor + " HTTP/1.1\r\n" +
+  sprintf(sensorpath, sensor, savedata.luftdatenid); 
+   client.print(String("GET ") + sensorpath + " HTTP/1.1\r\n" +
                "Host: " + host + "\r\n" +
                "User-Agent: BuildFailureDetectorESP8266\r\n" +
                "Connection: close\r\n\r\n");
