@@ -23,8 +23,6 @@ typedef struct {
     uint32_t magic;
 } savedata_t;
 
-// SHA1 fingerprint of the certificate
-const char fingerprint[] PROGMEM = "DF:14:13:1B:DF:BD:6E:DA:54:57:5C:41:E7:B4:FE:7F:40:B7:F9:84";
 static WiFiManager wifiManager;
 static WiFiManagerParameter luftdatenIdParam("luftdatenid", "Luftdaten ID", "", sizeof(savedata_t));
 
@@ -257,7 +255,7 @@ int update(){
   
   // Use WiFiClientSecure class to create TLS connection
   WiFiClientSecure client;
-  client.setFingerprint(fingerprint);
+  client.setInsecure();
 
   if (!client.connect(host, httpsPort)) {
     Serial.println("connection failed");
