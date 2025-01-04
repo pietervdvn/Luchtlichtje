@@ -1,0 +1,29 @@
+Info: Backing up file '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/sym-lib-table' to '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/rescue-backup/sym-lib-table-2025-01-04-02-21-57'.
+Info: Backing up file '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/LuchtLampje.sch' to '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/rescue-backup/LuchtLampje-2025-01-04-02-21-57.sch'.
+Info: Backing up file '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/LuchtLampje.kicad_pro' to '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/rescue-backup/LuchtLampje-2025-01-04-02-21-57.kicad_pro'.
+Info: Backing up file '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/LuchtLampje-cache.lib' to '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/rescue-backup/LuchtLampje-cache-2025-01-04-02-21-57.lib'.
+Info: Backing up file '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/LuchtLampje-rescue.lib' to '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/rescue-backup/LuchtLampje-rescue-2025-01-04-02-21-57.lib'.
+Info: Backing up file '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/LuchtLampje-rescue.dcm' to '/home/pietervdvn/git/Luchtlichtje/v0.2/Hardware/LuchtLampje/rescue-backup/LuchtLampje-rescue-2025-01-04-02-21-57.dcm'.
+Info: Adding library 'LuchtLampje-rescue', file '${KIPRJMOD}/LuchtLampje-rescue.lib' to project symbol library table.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol R mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol R mapped to symbol library 'LuchtLampje-rescue'.
+Symbol R mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol LED mapped to symbol library 'LuchtLampje-rescue'.
+Symbol CONN_01X15 mapped to symbol library 'LuchtLampje-rescue'.
+Symbol CONN_01X15 mapped to symbol library 'LuchtLampje-rescue'.
+Symbol R mapped to symbol library 'LuchtLampje-rescue'.
+Symbol R_PHOTO mapped to symbol library 'LuchtLampje-rescue'.
+Info: Symbol library table mapping complete!
+Info: Created project symbol library table.
+

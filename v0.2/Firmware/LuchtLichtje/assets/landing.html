@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg" href="./logo.svg"/>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <title>Luchtlichtje Controller</title>
+    <style>        .slidecontainer {
+        width: 100%;
+    }
+
+    body {
+        background: black;
+        color: cyan;
+        font-family: monospace;
+        font-size: large
+    }
+
+    </style>
+</head>
+<body>
+<div class="slidecontainer">
+    <br/>
+
+    <label for="sensorid">Sensor ID (must have a SDS11)</label><input type="text" id="sensorid" name="sensorid">
+    <button id="apply_btn">Apply</button>
+    <a href="setup">Switch wifi network</a>
+
+    <script>
+        
+        let sensorfield = document.getElementById("sensorid");
+
+        let updatePending = true; /* Perform an update on load to set the clock*/
+
+        function configure() {
+            if (!updatePending) {
+                return;
+            }
+            updatePending = false;
+            let query = `sensor=${sensorfield.value}`;
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `./configure?${query}`);
+            xhr.send();
+        };
+        
+        function getIp() {
+            console.log("Fetching ip...")
+            fetch("./status").then((response) => {
+            response.json().then((status) => {
+            console.log(status);
+            sensorfield.value = ""+ status.sensorid;
+            const link = document.createElement("a")
+            link.href = "http://"+status.ip
+            link.innerHTML = "IP address is "+status.ip
+            document.body.append(link)
+
+                const linkho = document.createElement("a")
+                linkho.href = "http://"+status.hostname+".local"
+                linkho.innerHTML = "Hostname is "+status.hostname
+                document.body.append(linkho)
+            })
+            });
+        }
+        
+        getIp()
+
+        function chronic() {
+            configure();
+            window.setTimeout(chronic, 400);
+        };
+        chronic();
+
+        function update() {
+            updatePending = true;
+        };
+        const button = document.getElementById("apply_btn");
+        button.onclick = update
+    </script>
+</div>
+</body>
+</html>
+

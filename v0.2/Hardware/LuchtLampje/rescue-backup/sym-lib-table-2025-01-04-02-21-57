@@ -1,0 +1,3 @@
+(sym_lib_table
+  (lib (name "LuchtLampje-rescue")(type "Legacy")(uri "${KIPRJMOD}/LuchtLampje-rescue.lib")(options "")(descr ""))
+)

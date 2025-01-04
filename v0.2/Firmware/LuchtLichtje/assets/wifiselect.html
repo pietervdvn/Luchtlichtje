@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg" href="./logo.svge"/>
+    <link rel="manifest" href="./manifest.webmanifest">
+    <title>Traffic Light Controller</title>
+    <style>        .slidecontainer {
+        width: 100%;
+    }
+
+    body {
+        background: black;
+        color: cyan;
+        font-family: monospace;
+        font-size: large
+    }
+    </style>
+</head>
+<body>
+<div class="slidecontainer">
+    <label for="ssid">Wifi network name</label><input type="text" id="ssid" name="ssid">
+    <br/>
+    <label for="password">Wifi password</label><input id="password" name="password" type="password">
+    <br/>
+    <label for="ssid_2">Fallback Wifi network name</label><input type="text" id="ssid_2" name="ssid">
+    <br/>
+    <label for="password_2">Fallback Wifi password</label><input id="password_2" name="password" type="password">
+    <br/>
+    <label for="hostname">Hostname (the device will be visible as hostname.local)</label><input type="text" id="hostname" name="hostname" value="luchtlichtje" >
+    <br/>
+    <button type="button" id="apply">Apply</button>
+    <script>
+
+        const ssid = document.getElementById("ssid");
+        const password = document.getElementById("password");
+        const ssid_2 = document.getElementById("ssid_2");
+        const password_2 = document.getElementById("password_2");
+        const hostname = document.getElementById("hostname");
+        const apply = document.getElementById("apply");
+        function configure() {
+            let query = `ssid=${ssid.value}&password=${password.value}&ssid_2=${ssid_2.value}&password_2=${password_2.value}&hostname=${hostname.value}`;
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", `./configure?${query}`);
+            xhr.send();
+        }
+        apply.onclick = configure;
+    </script>
+</div>
+</body>
+</html>
+
