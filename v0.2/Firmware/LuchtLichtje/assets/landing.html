@@ -37,6 +37,10 @@
             if (!updatePending) {
                 return;
             }
+            if(isNaN(Number(sensorfield.value)) ){
+                alert("Invalid number")
+                return
+            }
             updatePending = false;
             let query = `sensor=${sensorfield.value}`;
             const xhr = new XMLHttpRequest();
@@ -64,12 +68,6 @@
         }
         
         getIp()
-
-        function chronic() {
-            configure();
-            window.setTimeout(chronic, 400);
-        };
-        chronic();
 
         function update() {
             updatePending = true;
